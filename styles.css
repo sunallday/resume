@@ -82,6 +82,7 @@ h1 { font-size: clamp(28px, 2.7vw, 42px); font-weight: 750; letter-spacing: -1.5
 .hero-contact a { display: inline-flex; align-items: center; gap: 7px; overflow-wrap: anywhere; }
 .hero-contact a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; }
 .hero-contact .icon { color: var(--accent); }
+.resume-site-link { display: none; }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
 .hero-tags > span { padding: 2px 9px; color: #59676d; background: #eef1f3; border: 1px solid #e4e9ec; border-radius: 4px; font: 11px/1.8 var(--mono); }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
@@ -462,6 +463,7 @@ h3 { font-size: 17px; font-weight: 650; line-height: 1.65; }
 
 /* 打印时保留简历正文，去掉导航、装饰卡和网页操作。 */
 @page { size: A4; margin: 14mm; }
+@page resume { size: A4; margin: 12mm 15mm 14mm; }
 @media print {
   :root { --ink: #111; --text: #333; --muted: #555; --line: #ddd; }
   html { scroll-behavior: auto; }
@@ -469,59 +471,109 @@ h3 { font-size: 17px; font-weight: 650; line-height: 1.65; }
   .sidebar, .topbar, .developer-card, .hero-actions, .overview-strip, .footer, .toast, .copy-button, .contact-section, .skip-link, .project-status, .hero-tags, .project-tags, .skill-card-heading, .skill-card .tags { display: none !important; }
   .page { margin: 0; }
   main { max-width: none; padding: 0; }
-  .section { margin-bottom: 4mm; scroll-margin: 0; }
-  .hero { display: block; padding-top: 0; padding-bottom: 5mm; border-bottom: 1px solid #bbb; }
-  .hero-main { display: flow-root; }
-  .hero-portrait { display: block; float: right; width: 25mm; height: 25mm; margin: 0 0 3mm 5mm; border: 1px solid #ddd; border-radius: 2mm; }
-  .eyebrow { margin-bottom: 2mm; font-size: 8pt; }
+  .section { margin-bottom: 5mm; scroll-margin: 0; }
   h1 { font-size: 22pt; line-height: 1.3; }
-  .hero-subtitle { font-size: 12pt; }
-  .hero-meta { margin-top: 2mm; font-size: 9pt; }
-  .hero-description { margin-top: 2mm; font-size: 9pt; line-height: 1.6; }
-  .hero-contact { gap: 2mm 6mm; margin-top: 2mm; font-size: 9pt; }
-  .hero-contact .icon { display: none; }
-  .desktop-break { display: none; }
-  .section-heading { margin-bottom: 3mm; break-after: avoid; }
-  .section-heading h2 { font-size: 15pt; }
-  .section-number { font-size: 7pt; }
-  .section-heading > p { display: none; }
+  h3 { font-size: 12pt; }
   .surface { box-shadow: none; border-color: #ddd; border-radius: 0; }
-  .experience-card { padding: 3mm; }
-  .experience-header { flex-wrap: wrap; }
-  .experience-date { margin-left: auto; }
-  .experience-body { padding-top: 3mm; }
-  .experience-footer { display: none; }
-  .two-columns { display: block; }
-  .two-columns li + li { margin-top: 1mm; }
-  h3, .company-title h3, .project-title h3 { font-size: 12pt; }
-  .detail-list, .project-description, .card-intro { font-size: 9pt; line-height: 1.7; }
-  .detail-list li { line-height: 1.7; }
-  .detail-list li + li { margin-top: 1mm; }
-  .detail-list li::before { top: 8px; }
-  .project-list { display: block; }
-  .project-card { margin-bottom: 3mm; padding: 3mm; break-inside: avoid; }
-  .project-heading { flex-wrap: nowrap; }
-  .project-number { width: 26px; font-size: 17pt; }
-  .project-period { width: auto; margin-left: auto; font-size: 8pt; }
-  .project-content { padding-left: 0; }
-  .project-meta, .project-description, .module-row, .project-content h4 { margin-top: 2mm; }
-  .module-row { flex-direction: row; padding: 2mm; }
-  .project-outcome { margin-top: 2mm; padding: 1mm 2mm; color: #333; background: transparent; border-color: #aaa; font-size: 8pt; }
-  .project-outcome > strong { color: #222; font-size: 8pt; }
-  .tags > span { font-size: 7pt; }
+  .desktop-break { display: none; }
+
+  /* 简历使用独立纸张设置和深色正文，不改变博客打印配色。 */
+  #main {
+    page: resume;
+    --ink: #1c302b;
+    --text: #35413d;
+    --muted: #5c6b65;
+    --line: #d3ded8;
+    --accent: #236b59;
+    --accent-dark: #1b5144;
+    --accent-soft: #f0f5f2;
+    color: var(--text);
+    font: 9.5pt/1.6 "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  #main .surface { border-color: var(--line); }
+  #main :is(p, li) { orphans: 2; widows: 2; overflow-wrap: break-word; }
+  #main :is(h2, h3, h4) { break-after: avoid-page; }
+  #main :is(.hero, .experience-card, .project-card, .skill-card, #education) { page-break-inside: avoid; break-inside: avoid-page; }
+  #main :is(.eyebrow, .section-number, .heading-count, .company-mark, .education-icon, .experience-footer) { display: none; }
+
+  /* 页眉保留照片和完整网址，以细线分隔个人概览与经历。 */
+  .hero { display: block; padding: 0 0 4mm; border-bottom: .6mm solid var(--accent); }
+  .hero-main { display: flow-root; }
+  .hero-portrait { display: block; float: right; width: 25mm; height: 29mm; margin: 0 0 2mm 6mm; padding: 1mm; border: .3mm solid var(--line); border-radius: 2mm; }
+  #main h1 { color: var(--ink); font-size: 25pt; font-weight: 700; line-height: 1.2; letter-spacing: 2px; }
+  #main h1 > br { display: none; }
+  .hero-subtitle { display: block; margin-top: 2mm; color: var(--accent); font-size: 12pt; font-weight: 600; line-height: 1.5; letter-spacing: .5px; }
+  .hero-meta { gap: 2mm; margin-top: 2mm; color: var(--muted); font-size: 9pt; line-height: 1.5; }
+  .hero-description { margin-top: 2.5mm; color: var(--text); font-size: 9.5pt; line-height: 1.6; }
+  .hero-contact { gap: 1mm 6mm; margin-top: 2.5mm; color: var(--ink); font-size: 9pt; line-height: 1.5; }
+  .hero-contact a { gap: 1.5mm; }
+  .hero-contact .icon { display: block; width: 3mm; height: 3mm; color: var(--accent); }
+  .resume-site-link { display: block; margin-top: 1.5mm; color: var(--muted); font-size: 8.5pt; line-height: 1.6; break-inside: avoid; }
+  .resume-site-link a { color: var(--accent-dark); text-decoration: underline; text-decoration-thickness: .2mm; text-underline-offset: .6mm; overflow-wrap: anywhere; }
+
+  /* 章节标题与日期统一对齐，减少网页装饰带来的视觉干扰。 */
+  .section-heading { gap: 3mm; margin-bottom: 2.5mm; padding-bottom: 1.5mm; border-bottom: .25mm solid var(--line); page-break-after: avoid; break-after: avoid-page; }
+  .section-heading h2 { gap: 2mm; margin: 0; padding-left: 2.5mm; border-left: 1mm solid var(--accent); color: var(--accent-dark); font-size: 12pt; font-weight: 700; line-height: 1.2; letter-spacing: .8px; }
+  .section-heading > p { display: none; }
+  .company-title h3, .project-title h3, .education-info h3 { color: var(--ink); font-size: 11pt; font-weight: 700; line-height: 1.5; }
+  .experience-date, .project-period, .education-period { flex-shrink: 0; width: auto; margin: 0 0 0 auto; color: var(--muted); font: 8.5pt/1.6 var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* 技能采用标签与正文两列，便于快速扫描。 */
   .skills-grid { display: block; }
-  .skill-card { display: block; padding: 1mm 0; border: 0; break-inside: avoid; }
-  .skill-card h3 { display: inline; margin-right: 3mm; font-size: 9pt; }
-  .skill-card > p { display: inline; margin: 0; font-size: 9pt; line-height: 1.65; }
-  .supporting-skills { margin-top: 1mm; padding: 0; background: transparent; font-size: 8pt; }
+  .skill-card { display: grid; grid-template-columns: 35mm minmax(0, 1fr); gap: 0 4mm; padding: 1.5mm 0; border: 0; border-bottom: .25mm solid var(--line); }
+  .skill-card:last-child { border-bottom: 0; }
+  .skill-card h3 { margin: 0; color: var(--accent-dark); font-size: 9.2pt; font-weight: 700; line-height: 1.65; }
+  .skill-card > p { margin: 0; color: var(--text); font-size: 9.2pt; line-height: 1.65; }
+  .supporting-skills { margin-top: 2mm; padding: 1.5mm 3mm; color: var(--text); background: var(--accent-soft); border-left: .5mm solid var(--line); border-radius: 0 1mm 1mm 0; font-size: 8.5pt; line-height: 1.65; }
   .supporting-skills p + p { margin-top: 1mm; }
-  .education-card { flex-wrap: nowrap; padding: 4mm; }
-  .education-period { width: auto; margin-left: auto; }
-  .contact-section { display: block; padding: 4mm; background: #fff; border: 1px solid #ddd; border-radius: 0; break-inside: avoid; }
-  .contact-copy h2, .contact-copy > p { display: none; }
-  .personal-details { margin-top: 2mm; }
-  .contact-methods { display: flex; justify-content: space-between; gap: 5mm; }
-  .contact-item { padding: 2mm 0; border: 0; }
-  .contact-item a { font-size: 10pt; }
-  .contact-icon { display: none; }
+  .supporting-skills strong { margin-right: 2mm; color: var(--ink); }
+
+  /* 工作与项目正文维持单栏阅读，尽量避免卡片被分页截断。 */
+  .experience-card { padding: 2.5mm 3mm; border: .25mm solid var(--line); border-radius: 1.5mm; }
+  .experience-header { align-items: flex-start; flex-wrap: nowrap; gap: 4mm; }
+  .company-title { flex: 1; min-width: 0; }
+  .company-title > p { margin-top: 1mm; color: var(--muted); font-size: 9pt; line-height: 1.5; }
+  .inline-divider { margin: 0 2mm; color: var(--muted); }
+  .experience-date { gap: 1mm; }
+  .current-label { margin-right: 1mm; padding: 0 1.5mm; color: var(--accent-dark); background: var(--accent-soft); border: .25mm solid var(--line); border-radius: 1mm; font: 8pt/1.5 "Microsoft YaHei", sans-serif; }
+  .experience-body { padding-top: 2mm; }
+  .two-columns { display: block; }
+  .detail-list, .project-description, .card-intro { color: var(--text); font-size: 9.5pt; line-height: 1.6; }
+  .detail-list { margin-top: 2mm; }
+  .detail-list li { padding-left: 3mm; line-height: 1.6; break-inside: avoid-page; }
+  .detail-list li + li { margin-top: 1mm; }
+  .detail-list li::before { top: .65em; width: .8mm; height: .8mm; background: var(--accent); }
+  .detail-list strong { color: var(--ink); font-weight: 700; }
+  .project-list { display: block; }
+  .project-card { margin: 0 0 3mm; padding: 3mm; border: .25mm solid var(--line); border-radius: 1.5mm; box-shadow: none; }
+  #main .project-card:hover { border-color: var(--line); box-shadow: none; }
+  .project-card:last-child { margin-bottom: 0; }
+  .project-heading { align-items: center; flex-wrap: nowrap; gap: 2.5mm; break-after: avoid-page; }
+  .project-number { align-self: center; place-items: center; width: 7mm; height: 7mm; color: var(--accent); background: var(--accent-soft); border: .25mm solid var(--line); border-radius: 1mm; font: 10pt/1 var(--mono); letter-spacing: 0; }
+  .project-title { flex: 1; min-width: 0; }
+  .project-category { margin-bottom: .5mm; color: var(--muted); font-size: 8pt; line-height: 1.4; letter-spacing: .3px; }
+  .project-content { padding-left: 0; }
+  .project-meta { gap: 2mm; margin-top: 1.5mm; }
+  .role-tag { padding: 0 1.5mm; color: var(--accent-dark); background: var(--accent-soft); border: .25mm solid var(--line); border-radius: 1mm; font-size: 8.5pt; line-height: 1.6; }
+  .project-note { color: var(--muted); font-size: 8.5pt; line-height: 1.6; }
+  .project-description { margin-top: 2mm; }
+  .module-row { align-items: baseline; flex-direction: row; gap: 2mm; margin-top: 1.5mm; padding: 1mm 2mm; background: #f5f7f6; border-radius: 1mm; }
+  .small-label { color: var(--muted); font-size: 8pt; line-height: 1.5; }
+  .module-row p { color: var(--text); font-size: 8.5pt; line-height: 1.5; }
+  .module-row p > span { margin: 0 1.5mm; color: var(--muted); }
+  .project-content h4 { margin-top: 2mm; color: var(--ink); font-size: 9pt; font-weight: 700; line-height: 1.5; }
+  .project-content .detail-list { margin-top: 1.5mm; }
+  .project-outcome { margin-top: 2mm; padding: 1.5mm 2mm; color: var(--text); background: var(--accent-soft); border-left: .6mm solid var(--accent); border-radius: 0 1mm 1mm 0; font-size: 8.5pt; line-height: 1.6; }
+  .project-outcome > strong { margin-right: 2mm; color: var(--accent-dark); font-size: 8.5pt; }
+  .tags > span { font-size: 7pt; }
+
+  .education-card { align-items: center; flex-wrap: nowrap; gap: 3mm; padding: 2mm 0; border: 0; }
+  .education-info { min-width: 0; }
+  .education-info h3 { gap: 2mm; }
+  .degree { padding: 0 1.5mm; color: var(--accent-dark); background: var(--accent-soft); border: .25mm solid var(--line); border-radius: 1mm; font-size: 8pt; line-height: 1.6; }
+  .education-info p { margin-top: 1mm; color: var(--text); font-size: 9pt; line-height: 1.5; }
+  .education-period > span { margin: 0 1.5mm; }
+  #projects { margin-bottom: 0; }
 }
